@@ -1,0 +1,41 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+TurtleBlue	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+getButton	KEYWORD2
+getSliderId	KEYWORD2
+getSliderVal	KEYWORD2
+getThrottle	KEYWORD2
+getSteering	KEYWORD2
+checkBluetooth	KEYWORD2
+isConnected	KEYWORD2
+sendText	KEYWORD2
+sendMessage	KEYWORD2
+getText	KEYWORD2
+setInterruptToggle	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+BUTTON_TRANSMISSION	LITERAL1
+SLIDER_TRANSMISSION
+DRIVE_TRANSMISSION
+TEXT_SEND_TRANSMISSION
+CONNECTION_CHECK
+TRANSMISSION_END
+DEFAULT_VALUE
+DELIMETER
+LOCATION_TRANSMISSION_START
+DISPLAY_SEND_TRANSMISSION
+TEXT_TRANSMISSION_TIMEOUT
+SHORT_TRANSMISSION_TIMEOUT
