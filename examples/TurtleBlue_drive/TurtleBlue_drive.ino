@@ -195,7 +195,7 @@ void loop() {
 	// Refer to comment on top for step by step instructions.
 #ifdef do_Testing		 	// do it if testing option is set
 	doTesting();
-#elseif
+#else
 	controlDrive();			// otherwise do driving
 #endif
 	}
