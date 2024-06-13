@@ -1,3 +1,4 @@
+#include <TurtleBlue.h>
 #include <SoftwareSerial.h>
 
 unsigned long BAUD_RATE = 9600;
@@ -46,7 +47,15 @@ void loop() {
     prevMillis = millis();
     while( millis() - prevMillis < READ_TIME ) {
       if( bluetooth.available() ) {
-        str += (char) bluetooth.read();
+        char c = bluetooth.read();
+        if( isPrintable( c ) ) {
+          str += c ;
+          }
+        else {
+          str += '<';
+          str += (char)( c + '0' );
+          str += '>';
+          }
         }
       }
     Serial.println( str );

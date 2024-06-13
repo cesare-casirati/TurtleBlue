@@ -5,6 +5,11 @@ Author: Cesare M. Casirati
 #ifndef TurtleBlue_h
 #define TurtleBlue_h
 
+
+#ifndef MicroBlue
+#define MicroBlue
+#endif
+
 #include "FunctionType.h"
 #include <Arduino.h>
 
@@ -18,6 +23,8 @@ Author: Cesare M. Casirati
 #define DIGITAL_PAD         0
 #define ANALOG_PAD          1
 #define BUTTON              'b'
+#define SWITCH1             's'
+#define SWITCH2             'w'
 #define TEXT                't'
 #define SLIDER1             's'
 #define SLIDER2             'l'
@@ -123,8 +130,9 @@ private:
     void processMicroBlueDigitalPad();
     void processMicroBlueAnalogPad();
     void processMicroBlueButton();
-    void processMicroBlueText();
+    void processMicroBlueSwitch();
     void processMicroBlueSlider();
+    void processMicroBlueText();
     void attachInterrupts();
     void detachInterrupts();
     String readString();

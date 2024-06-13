@@ -26,13 +26,7 @@ bool TurtleBlue::checkBluetooth() {
         // according MicroBlue app syntax
 #ifdef MicroBlue
         if( intRead == START_OF_HEADING ) {
-            processMicroBlueId();
-            }
-        else if (intRead == START_OF_TEXT ) {
-            processMicroBlueValue();
-            }
-        else if( intRead == END_OF_TEXT ) {
-            processMicroBlueEnd();
+            processMicroBlueCommand();
             }
 #endif
         // otherwise 
@@ -56,8 +50,8 @@ bool TurtleBlue::checkBluetooth() {
         else if( intRead == CONNECTION_CHECK ) {
             _bluetooth.print(CONNECTION_CHECK);
             }
-        }
 #endif
+        }
 
     return isDataRead;
     }
@@ -80,18 +74,22 @@ void TurtleBlue::processMicroBlueCommand() {
             }
         }
     
-    if() _MicroBlueCommand.indexOf( START_OF_TEXT ) > 0 {
-        if( _MicroBlueCommand[1] == DRIVE_PAD ) {
+    if( _MicroBlueCommand.indexOf( START_OF_TEXT ) > 0 ) {
+        if( _MicroBlueCommand[0] == PAD ) {
             processMicroBlueDrive();
             }
-        else if( _MicroBlueCommand[1] == BUTTON ) {
+        else if( _MicroBlueCommand[0] == BUTTON ) {
             processMicroBlueButton();
             }
-        else if( _MicroBlueCommand[1] == TEXT ) {
+        else if( _MicroBlueCommand[0] == SWITCH1 && 
+                 _MicroBlueCommand[1] == SWITCH2 ) { 
+            processMicroBlueSwitch();
+            }
+        else if( _MicroBlueCommand[0] == TEXT ) {
             processMicroBlueText();
             }
-        else if( _MicroBlueCommand[1] == SLIDER1 &&
-                 _MicroBlueCommand[2] == SLIDER2 ) {
+        else if( _MicroBlueCommand[0] == SLIDER1 &&
+                 _MicroBlueCommand[1] == SLIDER2 ) {
             processMicroBlueSlider();
             }
         }
@@ -99,8 +97,8 @@ void TurtleBlue::processMicroBlueCommand() {
 
 void TurtleBlue::processMicroBlueDrive() {
     // Read the incoming heading increments
-    String h = _MicroBlueCommand.substr( _MicroBlueCommand.indexOf( START_OF_TEXT + 1 ), _MicroBlueCommand.indexOf( ',' ) - 1 );
-    String v = _MicroBlueCommand.substr( _MicroBlueCommand.indexOf( ',' ) + 1, _MicroBlueCommand.length() );
+    String h = _MicroBlueCommand.substring( _MicroBlueCommand.indexOf( START_OF_TEXT ) + 1, _MicroBlueCommand.indexOf( ',' ) );
+    String v = _MicroBlueCommand.substring( _MicroBlueCommand.indexOf( ',' ) + 1, _MicroBlueCommand.length() );
 
     // Set throttle and steering values
     // throttle values:
@@ -115,6 +113,13 @@ void TurtleBlue::processMicroBlueDrive() {
     _steering = map( h.toInt(), 0, 1023, 0, 99 );
     }
 
+// TO DO
+void TurtleBlue::processMicroBlueButton() {}
+void TurtleBlue::processMicroBlueSwitch() {}
+void TurtleBlue::processMicroBlueSlider() {}
+void TurtleBlue::processMicroBlueText() {}
+
+#ifdef ArduinoBlue
 void TurtleBlue::processDriveTransmission() {
     // Store the incoming throttle and steering values in the signal array.
     storeShortTransmission();
@@ -332,6 +337,7 @@ void TurtleBlue::clearSignalArray() {
         }
     _signalLength = 0;
     }
+#endif
 
 // Returns true if path data is available for use.
 bool TurtleBlue::isPathAvailable() {
@@ -396,6 +402,7 @@ int TurtleBlue::getPathLength() {
 	//return tempPathLength;
     }
 
+#ifdef ArduinoBlue
 // Send text to TurtleBlue to show in the terminal component
 void TurtleBlue::sendText( String msg ) {
     _bluetooth.print( ( (char) TEXT_SEND_TRANSMISSION) + msg + ( (char) TRANSMISSION_END) );
@@ -407,13 +414,14 @@ void TurtleBlue::sendDisplayData( uint8_t id, String msg ) {
     _bluetooth.print( ( (char) DISPLAY_SEND_TRANSMISSION ) + ( ( (char) id ) + msg ) + ( (char) TRANSMISSION_END) );
     _bluetooth.flush();
     }
+#endif
 
 // for backwards compatibility
 void TurtleBlue::sendMessage( String msg ) {
     sendText(msg);
     }
 
-
+#ifdef ArduinoBlue
 bool TurtleBlue::isConnected() {
     _bluetooth.print( CONNECTION_CHECK );
     // wait for 500 ms
@@ -423,6 +431,7 @@ bool TurtleBlue::isConnected() {
         }
     return false;
     }
+#endif
 
 // Returns the text that the user sent through the app.
 String TurtleBlue::getText() {

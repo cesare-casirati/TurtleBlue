@@ -13,7 +13,8 @@
 #include <TurtleBlue.h>			// TurtleBlue bluetooth library
 
 // Test options
-#define do_Testing
+// #define do_Testing
+#define do_Driving
 #ifdef do_Testing
 //#define test_fwd
 //#define test_bwd
@@ -97,7 +98,9 @@ void controlDrive() {
 	//     -49 = max left
 	int throttle = phone.getThrottle() - 49;
 	int steering = phone.getSteering() - 49;
-
+  phone.checkBluetooth();
+  Serial.print( "Throttle: " ); Serial.println( phone.getThrottle() );
+  Serial.print( "Steering: " ); Serial.println( phone.getSteering() );
 	if( throttle == 0 ) {
 		// If throttle is zero, don't move.
 		motorBrake();
