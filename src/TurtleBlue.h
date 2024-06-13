@@ -8,6 +8,24 @@ Author: Cesare M. Casirati
 #include "FunctionType.h"
 #include <Arduino.h>
 
+// start of MicroBlue App command definitions
+#ifdef MicroBlue
+#define START_OF_HEADING     0x01
+#define START_OF_TEXT        0x02
+#define END_OF_TEXT          0x03
+
+#define PAD                 'd'
+#define DIGITAL_PAD         0
+#define ANALOG_PAD          1
+#define BUTTON              'b'
+#define TEXT                't'
+#define SLIDER1             's'
+#define SLIDER2             'l'
+#endif
+// end of MicroBlue App command definitions
+
+// start of ArduinoBlue App command definitions
+#ifdef ArduinoBlue
 // Denotes start of path transmission from mobile app.
 #define PATH_TRANSMISSION               0xF4
 // Denotes that the path transmission was received successfully by the Arduino. (Sent from Arduino).
@@ -36,11 +54,13 @@ Author: Cesare M. Casirati
 // Default value for signal array elements.
 #define DEFAULT_VALUE                   0xFF
 
+#define PATH_OVERFLOW_VALUE             1000000
+#endif
+// end of ArduinoBlue App command definitions
+
 #define TEXT_TRANSMISSION_TIMEOUT       5000    // ms
 #define SHORT_TRANSMISSION_TIMEOUT      500
 #define PATH_TRANSMISSION_TIMEOUT       10000
-
-#define PATH_OVERFLOW_VALUE             1000000
 
 const uint8_t DEFAULT_STEERING = 50;
 const uint8_t DEFAULT_THROTTLE = 50;
@@ -80,6 +100,7 @@ private:
     uint8_t _button = DEFAULT_VALUE;
     bool _pathAvailable = false;
     String _text;
+    String _MicroBlueCommand;
     float * _pathX;
     float * _pathY;
     float _prevReturnXx;
@@ -94,6 +115,13 @@ private:
     void processTextTransmission();
     void processPathTransmission();
     void sendFloatAsBytes( float );
+    void processMicroBlueCommand();
+    void processMicroBlueDrive();
+    void processMicroBlueDigitalPad();
+    void processMicroBlueAnalogPad();
+    void processMicroBlueButton();
+    void processMicroBlueText();
+    void processMicroBlueSlider();
     void attachInterrupts();
     void detachInterrupts();
     String readString();

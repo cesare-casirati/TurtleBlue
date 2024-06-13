@@ -23,6 +23,21 @@ bool TurtleBlue::checkBluetooth() {
 
         // Check for transmission starting
         // If a new transmission starts process the transmission
+        // according MicroBlue app syntax
+#ifdef MicroBlue
+        if( intRead == START_OF_HEADING ) {
+            processMicroBlueId();
+            }
+        else if (intRead == START_OF_TEXT ) {
+            processMicroBlueValue();
+            }
+        else if( intRead == END_OF_TEXT ) {
+            processMicroBlueEnd();
+            }
+#endif
+        // otherwise 
+        // according ArduinoBlue app syntax
+#ifdef ArduinoBlue
         if( intRead == DRIVE_TRANSMISSION ) {
             processDriveTransmission();
             }
@@ -42,11 +57,64 @@ bool TurtleBlue::checkBluetooth() {
             _bluetooth.print(CONNECTION_CHECK);
             }
         }
+#endif
 
     return isDataRead;
     }
 
-// Process incoming throttle and steering data.
+// MicroBlue app command process
+// Process incoming command Id.
+void TurtleBlue::processMicroBlueCommand() {
+    uint8_t intRead;
+    unsigned long prevTime = millis();
+
+    _MicroBlueCommand = "";
+    // Read until newline character or timeout is reached
+    prevTime = millis();
+    while( millis() - prevTime < TEXT_TRANSMISSION_TIMEOUT ) {
+        if( _bluetooth.available() ) {
+            intRead = _bluetooth.read();
+            // break the loop if end of transmission
+            if( intRead == END_OF_TEXT ) break;
+            _MicroBlueCommand.concat( (char) intRead );
+            }
+        }
+    
+    if() _MicroBlueCommand.indexOf( START_OF_TEXT ) > 0 {
+        if( _MicroBlueCommand[1] == DRIVE_PAD ) {
+            processMicroBlueDrive();
+            }
+        else if( _MicroBlueCommand[1] == BUTTON ) {
+            processMicroBlueButton();
+            }
+        else if( _MicroBlueCommand[1] == TEXT ) {
+            processMicroBlueText();
+            }
+        else if( _MicroBlueCommand[1] == SLIDER1 &&
+                 _MicroBlueCommand[2] == SLIDER2 ) {
+            processMicroBlueSlider();
+            }
+        }
+    }
+
+void TurtleBlue::processMicroBlueDrive() {
+    // Read the incoming heading increments
+    String h = _MicroBlueCommand.substr( _MicroBlueCommand.indexOf( START_OF_TEXT + 1 ), _MicroBlueCommand.indexOf( ',' ) - 1 );
+    String v = _MicroBlueCommand.substr( _MicroBlueCommand.indexOf( ',' ) + 1, _MicroBlueCommand.length() );
+
+    // Set throttle and steering values
+    // throttle values:
+    //     99 = max forward throttle
+    //     49 = no throttle
+    //      0 = max reverse throttle
+    // steering values:
+    //     99 = max right
+    //     49 = straight
+    //      0 = max left
+    _throttle = map( v.toInt(), 0, 1023, 0, 99 );
+    _steering = map( h.toInt(), 0, 1023, 0, 99 );
+    }
+
 void TurtleBlue::processDriveTransmission() {
     // Store the incoming throttle and steering values in the signal array.
     storeShortTransmission();
