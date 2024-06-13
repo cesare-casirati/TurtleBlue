@@ -58,6 +58,9 @@ Author: Cesare M. Casirati
 #endif
 // end of ArduinoBlue App command definitions
 
+// Default value for signal array elements.
+#define DEFAULT_VALUE                   0xFF
+
 #define TEXT_TRANSMISSION_TIMEOUT       5000    // ms
 #define SHORT_TRANSMISSION_TIMEOUT      500
 #define PATH_TRANSMISSION_TIMEOUT       10000
