@@ -56,7 +56,7 @@ bool TurtleBlue::checkBluetooth() {
     return isDataRead;
     }
 
-// MicroBlue app command process
+// Process MicroBlue app commands
 // Process incoming command Id.
 void TurtleBlue::processMicroBlueCommand() {
     uint8_t intRead;
@@ -74,20 +74,27 @@ void TurtleBlue::processMicroBlueCommand() {
             }
         }
     
+    // decode command message
+    // if it's a valod message then start decoding
     if( _MicroBlueCommand.indexOf( START_OF_TEXT ) > 0 ) {
+        // it's a digital or analog pad command?
         if( _MicroBlueCommand[0] == PAD ) {
             processMicroBlueDrive();
             }
+        // or is it a button command?
         else if( _MicroBlueCommand[0] == BUTTON ) {
             processMicroBlueButton();
             }
+        // or a switch command?
         else if( _MicroBlueCommand[0] == SWITCH1 && 
                  _MicroBlueCommand[1] == SWITCH2 ) { 
             processMicroBlueSwitch();
             }
+        // maybe a text command?
         else if( _MicroBlueCommand[0] == TEXT ) {
             processMicroBlueText();
             }
+        // finally is it a slider command?
         else if( _MicroBlueCommand[0] == SLIDER1 &&
                  _MicroBlueCommand[1] == SLIDER2 ) {
             processMicroBlueSlider();
@@ -95,6 +102,8 @@ void TurtleBlue::processMicroBlueCommand() {
         }
     }
 
+// Process driving command 
+// through digital or analog pad
 void TurtleBlue::processMicroBlueDrive() {
     // Read the incoming heading increments
     String h = _MicroBlueCommand.substring( _MicroBlueCommand.indexOf( START_OF_TEXT ) + 1, _MicroBlueCommand.indexOf( ',' ) );

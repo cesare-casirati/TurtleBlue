@@ -90,7 +90,7 @@ void controlDrive() {
 	// THROTTLE AND STEERING CONTROL
 	// throttle values after subtracting 49:
 	//     50 = max forward throttle
-	//     0 = no throttole
+	//     0 = no throttle
 	//     -49 = max reverse throttle
 	// steering values after subtracting 49:
 	//     50 = max right
@@ -98,13 +98,13 @@ void controlDrive() {
 	//     -49 = max left
 	int throttle = phone.getThrottle() - 49;
 	int steering = phone.getSteering() - 49;
+
   phone.checkBluetooth();
-  Serial.print( "Throttle: " ); Serial.println( phone.getThrottle() );
-  Serial.print( "Steering: " ); Serial.println( phone.getSteering() );
-	if( throttle == 0 ) {
-		// If throttle is zero, don't move.
+
+	if( throttle == 0 && steering == 0 ) {
+		// If throttle and steering are null, don't move.
 		motorBrake();
-		return;
+    return;
 		}
 
 	// Determine forwards or backwards.
@@ -139,12 +139,9 @@ void controlDrive() {
 	analogWrite( ENB, rightMotorSpeed );
 
 	// Print Debug Info
-	Serial.print( "throttle: " ); Serial.print( throttle );
-	Serial.print( "\tsteering: " ); Serial.print( steering );
-	Serial.print( "\tmappedSpeed: " ); Serial.print( mappedSpeed );
-	Serial.print( "\treducedSpeed: " ); Serial.print( reducedSpeed );
-	Serial.print( "\tleftMotorSpeed: " ); Serial.print( leftMotorSpeed );
-	Serial.print( "\trightMotorSpeed: " ); Serial.println( rightMotorSpeed );
+  char buf[120];
+  sprintf( buf, "throttle %3d\tsteering %3d\tmappedSpeed %3d\treducedSpeed %3d\tleftMotorSpeed %3d\trightMotorSpeed %3d", throttle, steering, mappedSpeed, reducedSpeed, leftMotorSpeed, rightMotorSpeed );
+  Serial.println( buf );
 	}
 
 void doTesting() {
@@ -177,9 +174,9 @@ void setup() {
 	// Set pin modes
 	setPins();
 
-	Serial.println( "Setup complete" );
+  Serial.println();
 #ifdef do_Testing
-	Serial.println( "Testing setup" );
+	Serial.println( "Testing setup complete" );
 #ifdef test_fwd
 	Serial.println( "Testing forward motion" );
 #endif	
@@ -190,7 +187,7 @@ void setup() {
 	Serial.println( "Testing brake" );
 #endif
 #else
-	Serial.println( "Driving setup" );
+	Serial.println( "Driving setup complete" );
 #endif
 	}
 

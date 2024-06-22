@@ -72,8 +72,8 @@ Author: Cesare M. Casirati
 #define SHORT_TRANSMISSION_TIMEOUT      500
 #define PATH_TRANSMISSION_TIMEOUT       10000
 
-const uint8_t DEFAULT_STEERING = 50;
-const uint8_t DEFAULT_THROTTLE = 50;
+const uint8_t DEFAULT_STEERING = 49;
+const uint8_t DEFAULT_THROTTLE = 49;
 const uint8_t MAX_SHORT_SIGNAL_LENGTH = 3;
 
 
